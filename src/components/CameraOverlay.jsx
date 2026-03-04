@@ -348,47 +348,49 @@ function CameraOverlay({ imageUrl, onClose }) {
         />
       </div>
 
-      {/* Micro-adjustment Controls for precise positioning */}
-      <div className="micro-adjustment-panel">
-        <div className="step-size-selector">
-          <label>Step:</label>
-          <div className="step-buttons">
-            {[1, 5, 10].map(size => (
-              <button
-                key={size}
-                className={`step-btn ${stepSize === size ? 'active' : ''}`}
-                onClick={() => setStepSize(size)}
-              >
-                {size}px
+      {/* Micro-adjustment Controls for precise positioning - hidden when locked */}
+      {!isLocked && (
+        <div className="micro-adjustment-panel">
+          <div className="step-size-selector">
+            <label>Step:</label>
+            <div className="step-buttons">
+              {[1, 5, 10].map(size => (
+                <button
+                  key={size}
+                  className={`step-btn ${stepSize === size ? 'active' : ''}`}
+                  onClick={() => setStepSize(size)}
+                >
+                  {size}px
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="nudge-controls">
+            <button className="nudge-btn" onClick={nudgeUp} title="Move up">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              </svg>
+            </button>
+            <div className="nudge-row">
+              <button className="nudge-btn" onClick={nudgeLeft} title="Move left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="nudge-controls">
-          <button className="nudge-btn" onClick={nudgeUp} title="Move up">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
-          </button>
-          <div className="nudge-row">
-            <button className="nudge-btn" onClick={nudgeLeft} title="Move left">
+              <button className="nudge-btn" onClick={nudgeRight} title="Move right">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            <button className="nudge-btn" onClick={nudgeDown} title="Move down">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button className="nudge-btn" onClick={nudgeRight} title="Move right">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
+                <path d="M12 5v14M5 12l7 7 7-7" />
               </svg>
             </button>
           </div>
-          <button className="nudge-btn" onClick={nudgeDown} title="Move down">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Instructions */}
       <div className="overlay-instructions">
