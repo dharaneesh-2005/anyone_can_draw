@@ -24,6 +24,9 @@ function CameraOverlay({ imageUrl, onClose }) {
   
   // Micro-adjustment step size (1px, 5px, 10px)
   const [stepSize, setStepSize] = useState(5);
+
+  // Flip state for overlay image
+  const [isFlipped, setIsFlipped] = useState(false);
   
   // Gesture tracking
   const gestureRef = useRef({
@@ -36,7 +39,7 @@ function CameraOverlay({ imageUrl, onClose }) {
     pointers: new Map()
   });
 
-  // Start camera
+  // Start camera and enter fullscreen
   useEffect(() => {
     const startCamera = async () => {
       try {
@@ -54,7 +57,20 @@ function CameraOverlay({ imageUrl, onClose }) {
       }
     };
 
+    // Enter fullscreen when camera opens
+    const enterFullscreen = () => {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => console.log('Fullscreen denied:', err));
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    };
+
     startCamera();
+    enterFullscreen();
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
@@ -181,6 +197,11 @@ function CameraOverlay({ imageUrl, onClose }) {
     setIsLocked(!isLocked);
   };
 
+  // Toggle flip
+  const toggleFlip = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   // Reset transform
   const resetTransform = () => {
     if (containerRef.current) {
@@ -216,11 +237,11 @@ function CameraOverlay({ imageUrl, onClose }) {
     setShowGrid(!showGrid);
   };
 
-  // Calculate transform style - use left/top for position, transform for scale/rotate
+  // Calculate transform style - use left/top for position, transform for scale/rotate/flip
   const imageStyle = {
     left: `${transform.x}px`,
     top: `${transform.y}px`,
-    transform: `translate(-50%, -50%) scale(${transform.scale}) rotate(${transform.rotation}deg)`,
+    transform: `translate(-50%, -50%) scale(${transform.scale}) rotate(${transform.rotation}deg) scaleX(${isFlipped ? -1 : 1})`,
     opacity: opacity / 100,
   };
 
@@ -275,24 +296,39 @@ function CameraOverlay({ imageUrl, onClose }) {
       
       {/* Controls */}
       <div className="overlay-controls">
-        {/* Lock button */}
-        <button
-          className={`control-btn lock-btn ${isLocked ? 'locked' : ''}`}
-          onClick={toggleLock}
-          title={isLocked ? 'Unlock image' : 'Lock image position'}
-        >
-          {isLocked ? (
+        {/* Lock and Flip buttons in a row */}
+        <div className="control-row">
+          {/* Lock button */}
+          <button
+            className={`control-btn lock-btn ${isLocked ? 'locked' : ''}`}
+            onClick={toggleLock}
+            title={isLocked ? 'Unlock image' : 'Lock image position'}
+          >
+            {isLocked ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+              </svg>
+            )}
+          </button>
+
+          {/* Flip button */}
+          <button
+            className={`control-btn flip-btn ${isFlipped ? 'active' : ''}`}
+            onClick={toggleFlip}
+            title={isFlipped ? 'Unflip image' : 'Flip image horizontally'}
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <path d="M12 20V4M5 12l7-7 7 7" transform="rotate(90 12 12)" />
+              <path d="M3 12h18" />
             </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-            </svg>
-          )}
-        </button>
+          </button>
+        </div>
         
         {/* Reset button */}
         <button

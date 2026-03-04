@@ -80,8 +80,15 @@
   right: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   z-index: 1001;
+}
+
+/* Control buttons row for lock and flip */
+.control-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .control-btn {
@@ -120,6 +127,27 @@
 }
 
 .lock-btn.locked svg {
+  color: white;
+}
+
+/* Flip button styles - small icon near lock button */
+.flip-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.flip-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.flip-btn.active {
+  background: #667eea;
+}
+
+.flip-btn.active svg {
   color: white;
 }
 
