@@ -19,6 +19,12 @@ function CameraOverlay({ imageUrl, onClose }) {
   // Opacity state for overlay image transparency
   const [opacity, setOpacity] = useState(80);
   
+  // Grid overlay toggle
+  const [showGrid, setShowGrid] = useState(false);
+  
+  // Micro-adjustment step size (1px, 5px, 10px)
+  const [stepSize, setStepSize] = useState(5);
+  
   // Gesture tracking
   const gestureRef = useRef({
     isDragging: false,
@@ -188,6 +194,28 @@ function CameraOverlay({ imageUrl, onClose }) {
     }
   };
 
+  // Micro-adjustment functions for precise positioning
+  const nudgeUp = () => {
+    setTransform(prev => ({ ...prev, y: prev.y - stepSize }));
+  };
+
+  const nudgeDown = () => {
+    setTransform(prev => ({ ...prev, y: prev.y + stepSize }));
+  };
+
+  const nudgeLeft = () => {
+    setTransform(prev => ({ ...prev, x: prev.x - stepSize }));
+  };
+
+  const nudgeRight = () => {
+    setTransform(prev => ({ ...prev, x: prev.x + stepSize }));
+  };
+
+  // Toggle grid overlay
+  const toggleGrid = () => {
+    setShowGrid(!showGrid);
+  };
+
   // Calculate transform style - use left/top for position, transform for scale/rotate
   const imageStyle = {
     left: `${transform.x}px`,
@@ -235,6 +263,14 @@ function CameraOverlay({ imageUrl, onClose }) {
             draggable={false}
           />
         )}
+        
+        {/* Grid Overlay for precise alignment */}
+        {showGrid && (
+          <div className="grid-overlay">
+            <div className="grid-lines" />
+            <div className="grid-center-crosshair" />
+          </div>
+        )}
       </div>
       
       {/* Controls */}
@@ -269,7 +305,22 @@ function CameraOverlay({ imageUrl, onClose }) {
             <path d="M3 3v5h5" />
           </svg>
         </button>
-        
+
+        {/* Grid toggle button */}
+        <button
+          className={`control-btn grid-btn ${showGrid ? 'active' : ''}`}
+          onClick={toggleGrid}
+          title={showGrid ? 'Hide grid' : 'Show grid'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M3 9h18" />
+            <path d="M3 15h18" />
+            <path d="M9 3v18" />
+            <path d="M15 3v18" />
+          </svg>
+        </button>
+
         {/* Close button */}
         <button
           className="control-btn close-btn"
@@ -295,6 +346,48 @@ function CameraOverlay({ imageUrl, onClose }) {
           onChange={(e) => setOpacity(Number(e.target.value))}
           className="camera-transparency-slider"
         />
+      </div>
+
+      {/* Micro-adjustment Controls for precise positioning */}
+      <div className="micro-adjustment-panel">
+        <div className="step-size-selector">
+          <label>Step:</label>
+          <div className="step-buttons">
+            {[1, 5, 10].map(size => (
+              <button
+                key={size}
+                className={`step-btn ${stepSize === size ? 'active' : ''}`}
+                onClick={() => setStepSize(size)}
+              >
+                {size}px
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="nudge-controls">
+          <button className="nudge-btn" onClick={nudgeUp} title="Move up">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          </button>
+          <div className="nudge-row">
+            <button className="nudge-btn" onClick={nudgeLeft} title="Move left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button className="nudge-btn" onClick={nudgeRight} title="Move right">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+          <button className="nudge-btn" onClick={nudgeDown} title="Move down">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Instructions */}

@@ -123,6 +123,15 @@
   color: white;
 }
 
+/* Grid button styles */
+.grid-btn.active {
+  background: #667eea;
+}
+
+.grid-btn.active svg {
+  color: white;
+}
+
 /* Close button */
 .close-btn {
   background: rgba(255, 107, 107, 0.9);
@@ -312,5 +321,186 @@
   
   .transparency-slider-container label {
     font-size: 0.8rem;
+  }
+}
+
+/* Grid Overlay */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.grid-center-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+}
+
+.grid-center-crosshair::before,
+.grid-center-crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 107, 107, 0.8);
+}
+
+.grid-center-crosshair::before {
+  width: 30px;
+  height: 2px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.grid-center-crosshair::after {
+  width: 2px;
+  height: 30px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* Micro-adjustment Panel */
+.micro-adjustment-panel {
+  position: fixed;
+  bottom: 140px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 12px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1001;
+  min-width: 120px;
+}
+
+.step-size-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.step-size-selector label {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.step-buttons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.step-btn {
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.step-btn.active {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.nudge-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.nudge-row {
+  display: flex;
+  gap: 4px;
+}
+
+.nudge-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nudge-btn:hover {
+  background: white;
+  transform: scale(1.05);
+}
+
+.nudge-btn:active {
+  transform: scale(0.95);
+  background: #667eea;
+}
+
+.nudge-btn:active svg {
+  color: white;
+}
+
+.nudge-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #333;
+}
+
+/* Mobile adjustments for micro-adjustment panel */
+@media (max-width: 768px) {
+  .micro-adjustment-panel {
+    bottom: 130px;
+    left: 10px;
+    padding: 10px;
+    min-width: 100px;
+  }
+  
+  .nudge-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .nudge-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .step-btn {
+    padding: 3px 6px;
+    font-size: 0.65rem;
   }
 }
