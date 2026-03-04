@@ -57,20 +57,21 @@ function CameraOverlay({ imageUrl, onClose }) {
       }
     };
 
-    // Enter fullscreen when camera opens
-    const enterFullscreen = () => {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(err => console.log('Fullscreen denied:', err));
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    };
-
     startCamera();
-    enterFullscreen();
+    
+    // Enter fullscreen after a short delay to ensure component is mounted
+    setTimeout(() => {
+      const elem = document.documentElement;
+      if (document.fullscreenEnabled) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      }
+    }, 100);
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
@@ -294,41 +295,38 @@ function CameraOverlay({ imageUrl, onClose }) {
         )}
       </div>
       
-      {/* Controls */}
+      {/* Controls - all in a single horizontal row at top */}
       <div className="overlay-controls">
-        {/* Lock and Flip buttons in a row */}
-        <div className="control-row">
-          {/* Lock button */}
-          <button
-            className={`control-btn lock-btn ${isLocked ? 'locked' : ''}`}
-            onClick={toggleLock}
-            title={isLocked ? 'Unlock image' : 'Lock image position'}
-          >
-            {isLocked ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-              </svg>
-            )}
-          </button>
-
-          {/* Flip button */}
-          <button
-            className={`control-btn flip-btn ${isFlipped ? 'active' : ''}`}
-            onClick={toggleFlip}
-            title={isFlipped ? 'Unflip image' : 'Flip image horizontally'}
-          >
+        {/* Lock button */}
+        <button
+          className={`control-btn lock-btn ${isLocked ? 'locked' : ''}`}
+          onClick={toggleLock}
+          title={isLocked ? 'Unlock image' : 'Lock image position'}
+        >
+          {isLocked ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 20V4M5 12l7-7 7 7" transform="rotate(90 12 12)" />
-              <path d="M3 12h18" />
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
-          </button>
-        </div>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+            </svg>
+          )}
+        </button>
+
+        {/* Flip button */}
+        <button
+          className={`control-btn flip-btn ${isFlipped ? 'active' : ''}`}
+          onClick={toggleFlip}
+          title={isFlipped ? 'Unflip image' : 'Flip image horizontally'}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 20V4M5 12l7-7 7 7" transform="rotate(90 12 12)" />
+            <path d="M3 12h18" />
+          </svg>
+        </button>
         
         {/* Reset button */}
         <button

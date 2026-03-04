@@ -73,27 +73,25 @@
   opacity: 0.9;
 }
 
-/* Controls */
+/* Controls - single horizontal row at top */
 .overlay-controls {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  gap: 12px;
   z-index: 1001;
-}
-
-/* Control buttons row for lock and flip */
-.control-row {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
 }
 
 .control-btn {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.9);
@@ -104,6 +102,7 @@
   justify-content: center;
   transition: all 0.2s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 0;
 }
 
 .control-btn:hover {
@@ -116,8 +115,8 @@
 }
 
 .control-btn svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: #333;
 }
 
@@ -130,19 +129,7 @@
   color: white;
 }
 
-/* Flip button styles - small icon near lock button */
-.flip-btn {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
-}
-
-.flip-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
+/* Flip button styles - same size as other controls */
 .flip-btn.active {
   background: #667eea;
 }
@@ -236,20 +223,20 @@
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
+  .overlay-controls {
+    top: 16px;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
   .control-btn {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
   }
   
   .control-btn svg {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .overlay-controls {
-    top: 16px;
-    right: 16px;
-    gap: 10px;
+    width: 18px;
+    height: 18px;
   }
   
   .overlay-instructions {
@@ -267,9 +254,8 @@
 /* Landscape mode */
 @media (orientation: landscape) and (max-height: 500px) {
   .overlay-controls {
-    flex-direction: row;
-    top: 16px;
-    right: 16px;
+    top: 12px;
+    padding: 6px 12px;
   }
   
   .overlay-instructions {
@@ -342,13 +328,13 @@
 /* Mobile adjustments for transparency slider */
 @media (max-width: 768px) {
   .transparency-slider-container {
-    bottom: 70px;
-    padding: 10px 16px;
-    min-width: 160px;
+    bottom: 80px;
+    padding: 8px 14px;
+    min-width: 140px;
   }
   
   .transparency-slider-container label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -511,24 +497,28 @@
 /* Mobile adjustments for micro-adjustment panel */
 @media (max-width: 768px) {
   .micro-adjustment-panel {
-    bottom: 130px;
+    bottom: 140px;
     left: 10px;
-    padding: 10px;
-    min-width: 100px;
+    padding: 8px;
+    min-width: 90px;
   }
   
   .nudge-btn {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
   
   .nudge-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
   
   .step-btn {
-    padding: 3px 6px;
-    font-size: 0.65rem;
+    padding: 2px 5px;
+    font-size: 0.6rem;
+  }
+  
+  .step-size-selector label {
+    font-size: 0.7rem;
   }
 }
