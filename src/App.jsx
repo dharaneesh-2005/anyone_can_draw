@@ -54,17 +54,6 @@ function App() {
   };
 
   const handleOpenCamera = () => {
-    // Enter fullscreen when opening camera (must be triggered by user gesture)
-    const elem = document.documentElement;
-    if (document.fullscreenEnabled) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    }
     setShowCamera(true);
   };
 

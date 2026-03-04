@@ -224,6 +224,28 @@ function CameraOverlay({ imageUrl, onClose }) {
     setShowGrid(!showGrid);
   };
 
+  // Toggle fullscreen
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.log('Exit fullscreen error:', err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  };
+
   // Calculate transform style - use left/top for position, transform for scale/rotate/flip
   const imageStyle = {
     left: `${transform.x}px`,
@@ -338,6 +360,17 @@ function CameraOverlay({ imageUrl, onClose }) {
             <path d="M3 15h18" />
             <path d="M9 3v18" />
             <path d="M15 3v18" />
+          </svg>
+        </button>
+
+        {/* Fullscreen button */}
+        <button
+          className="control-btn fullscreen-btn"
+          onClick={toggleFullscreen}
+          title="Toggle fullscreen"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
           </svg>
         </button>
 
