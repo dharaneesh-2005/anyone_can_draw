@@ -58,20 +58,6 @@ function CameraOverlay({ imageUrl, onClose }) {
     };
 
     startCamera();
-    
-    // Enter fullscreen after a short delay to ensure component is mounted
-    setTimeout(() => {
-      const elem = document.documentElement;
-      if (document.fullscreenEnabled) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch(err => console.log('Fullscreen error:', err));
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        }
-      }
-    }, 100);
 
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
@@ -358,7 +344,18 @@ function CameraOverlay({ imageUrl, onClose }) {
         {/* Close button */}
         <button
           className="control-btn close-btn"
-          onClick={onClose}
+          onClick={() => {
+            if (document.fullscreenElement) {
+              if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => console.log('Exit fullscreen error:', err));
+              } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+              }
+            }
+            onClose();
+          }}
           title="Close camera"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
