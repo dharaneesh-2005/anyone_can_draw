@@ -16,6 +16,9 @@ function CameraOverlay({ imageUrl, onClose }) {
     rotation: 0
   });
   
+  // Opacity state for overlay image transparency
+  const [opacity, setOpacity] = useState(80);
+  
   // Gesture tracking
   const gestureRef = useRef({
     isDragging: false,
@@ -190,6 +193,7 @@ function CameraOverlay({ imageUrl, onClose }) {
     left: `${transform.x}px`,
     top: `${transform.y}px`,
     transform: `translate(-50%, -50%) scale(${transform.scale}) rotate(${transform.rotation}deg)`,
+    opacity: opacity / 100,
   };
 
   return (
@@ -279,6 +283,20 @@ function CameraOverlay({ imageUrl, onClose }) {
         </button>
       </div>
       
+      {/* Transparency Slider */}
+      <div className="transparency-slider-container">
+        <label htmlFor="camera-opacity">Opacity: {opacity}%</label>
+        <input
+          id="camera-opacity"
+          type="range"
+          min="0"
+          max="100"
+          value={opacity}
+          onChange={(e) => setOpacity(Number(e.target.value))}
+          className="camera-transparency-slider"
+        />
+      </div>
+
       {/* Instructions */}
       <div className="overlay-instructions">
         <p>👆 Drag to move • 🤏 Pinch to zoom/rotate</p>

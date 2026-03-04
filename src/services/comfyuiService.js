@@ -1,23 +1,24 @@
 import axios from 'axios';
 
-// IMPORTANT: ComfyUI must be started with CORS enabled for this to work.
-// Start ComfyUI with: python main.py --listen 0.0.0.0 --port 8000 --enable-cors-header "*"
-// Or set environment variable before starting: set COMFYUI_ENABLE_CORS_HEADER=*
+// Use proxy server instead of direct ComfyUI connection
+// This solves HTTPS/HTTP mixed content issues
 
-// Get ComfyUI URL from environment variable or use default
-// For remote access, set VITE_COMFYUI_URL in your .env file or before build
-const COMFYUI_BASE_URL = import.meta.env.VITE_COMFYUI_URL || 'http://127.0.0.1:8000';
-const COMFYUI_API_URL = `${COMFYUI_BASE_URL}/api`;
-
-console.log('ComfyUI URL:', COMFYUI_BASE_URL); // Debug log
-
-// Simple axios config without credentials to avoid CORS preflight issues
-const axiosConfig = {
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  },
-  withCredentials: false
+// Auto-detect proxy URL based on where the frontend is accessed from
+const getProxyUrl = () => {
+  // If explicitly set in env, use that (for development)
+  if (import.meta.env.VITE_PROXY_URL) {
+    return import.meta.env.VITE_PROXY_URL;
+  }
+  
+  // In production, use relative URL (same server that served the frontend)
+  // This way we only need ONE port forwarded
+  return '';
 };
+
+const PROXY_URL = getProxyUrl();
+const API_URL = `${PROXY_URL}/api`;
+
+console.log('API URL:', API_URL);
 
 class ComfyUIService {
   constructor() {
@@ -29,18 +30,16 @@ class ComfyUIService {
   }
 
   /**
-   * Upload image to ComfyUI
+   * Upload image via proxy server
    * @param {File} file - The image file to upload
    * @returns {Promise<string>} - The filename of the uploaded image
    */
   async uploadImage(file) {
     const formData = new FormData();
     formData.append('image', file);
-    formData.append('type', 'input');
-    formData.append('overwrite', 'true');
 
     try {
-      const response = await axios.post(`${COMFYUI_BASE_URL}/upload/image`, formData, {
+      const response = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -48,10 +47,7 @@ class ComfyUIService {
       return response.data.name;
     } catch (error) {
       console.error('Error uploading image:', error);
-      if (error.response && error.response.status === 403) {
-        throw new Error('CORS error: Please start ComfyUI with --enable-cors-header flag. See console for details.');
-      }
-      throw new Error('Failed to upload image to ComfyUI');
+      throw new Error('Failed to upload image. Make sure the proxy server is running.');
     }
   }
 
@@ -74,7 +70,7 @@ class ComfyUIService {
     };
 
     try {
-      const response = await axios.post(`${COMFYUI_API_URL}/prompt`, payload);
+      const response = await axios.post(`${API_URL}/prompt`, payload);
       return response.data.prompt_id;
     } catch (error) {
       console.error('Error queuing workflow:', error);
@@ -89,7 +85,7 @@ class ComfyUIService {
    */
   async getPromptStatus(promptId) {
     try {
-      const response = await axios.get(`${COMFYUI_API_URL}/prompt`);
+      const response = await axios.get(`${API_URL}/prompt`);
       const queue = response.data;
       
       // Check if prompt is still in queue or running
@@ -114,7 +110,7 @@ class ComfyUIService {
    */
   async getPromptHistory(promptId) {
     try {
-      const response = await axios.get(`${COMFYUI_API_URL}/history/${promptId}`);
+      const response = await axios.get(`${API_URL}/history/${promptId}`);
       return response.data[promptId];
     } catch (error) {
       console.error('Error getting prompt history:', error);
@@ -144,7 +140,7 @@ class ComfyUIService {
             const saveImageNode = history.outputs['106'];
             if (saveImageNode && saveImageNode.images && saveImageNode.images.length > 0) {
               const image = saveImageNode.images[0];
-              const imageUrl = `${COMFYUI_BASE_URL}/view?filename=${encodeURIComponent(image.filename)}&type=output&subfolder=${encodeURIComponent(image.subfolder || '')}`;
+              const imageUrl = `${API_URL}/view?filename=${encodeURIComponent(image.filename)}&type=output&subfolder=${encodeURIComponent(image.subfolder || '')}`;
               resolve(imageUrl);
               return;
             }

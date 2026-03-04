@@ -17,70 +17,72 @@ Transform your photos into beautiful line art using ComfyUI and Flux 2.
 npm install
 ```
 
-### 2. Configure ComfyUI URL
+### 2. Start ComfyUI
 
-Copy the example environment file and edit it:
+Start ComfyUI locally:
 ```bash
-cp .env.example .env
+python main.py --listen 127.0.0.1 --port 8000
 ```
 
-Edit `.env` and set your ComfyUI URL:
-```
-# For local development (same machine):
-VITE_COMFYUI_URL=http://127.0.0.1:8000
-
-# For remote access (different machine on same network):
-VITE_COMFYUI_URL=http://192.168.1.100:8000
-```
-
-### 3. Start ComfyUI with CORS
-
-**Important:** ComfyUI must be started with CORS headers enabled:
+### 3. Start Proxy Server
 
 ```bash
-# Windows Command Prompt
-set COMFYUI_ENABLE_CORS_HEADER=*
-python main.py --listen 0.0.0.0 --port 8000
-
-# Windows PowerShell
-$env:COMFYUI_ENABLE_CORS_HEADER="*"
-python main.py --listen 0.0.0.0 --port 8000
-
-# Linux/Mac
-COMFYUI_ENABLE_CORS_HEADER=* python main.py --listen 0.0.0.0 --port 8000
+npm run server
 ```
-
-Use `--listen 0.0.0.0` to allow connections from other devices on your network.
 
 ### 4. Start the React App
 ```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`
+The app will show you the network URLs. Access from any device on your network!
+
+**Example output:**
+```
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.31.107:3000/
+```
+
+Use the Network URL on your phone/tablet (same WiFi).
+
+## Architecture
+
+```
+[Frontend] <--HTTPS--> [Proxy Server] <--HTTP--> [ComfyUI]
+  Port 3000              Port 3001              Port 8000
+```
+
+The proxy server solves HTTPS/HTTP mixed content issues when using tunnels or remote access.
 
 ## Remote Access Setup
 
-To access the app from another device (phone, tablet, etc.):
+### Same WiFi Network (Automatic!)
 
-### Option 1: Same Network (Local)
-1. Find your computer's IP address:
-   - Windows: `ipconfig` (look for IPv4 Address)
-   - Mac/Linux: `ifconfig` or `ip addr`
+**No configuration needed!** Just:
 
-2. Update `.env` with your IP:
+1. Start all services (ComfyUI, proxy, frontend)
+2. Look at the terminal output for the Network URL
+3. Open that URL on your phone/tablet
+
+The frontend automatically detects and connects to the proxy server.
+
+### Internet Access (Different Network)
+
+Only needed if accessing from mobile data or different WiFi:
+
+1. Use ngrok to expose the proxy server:
+   ```bash
+   ngrok http 3001
    ```
-   VITE_COMFYUI_URL=http://YOUR_IP:8000
+
+2. Set the HTTPS URL in `.env`:
+   ```
+   VITE_PROXY_URL=https://abc123.ngrok.io
    ```
 
-3. Restart the React dev server
+3. Restart the frontend
 
-4. Access from other devices at `http://YOUR_IP:3000`
-
-### Option 2: Port Forwarding (Internet)
-1. Forward port 8000 on your router to your computer running ComfyUI
-2. Update `.env` with your public IP or domain
-3. Note: This exposes ComfyUI to the internet - use with caution
+4. Access from the ngrok URL shown in terminal
 
 ## Usage
 
@@ -96,21 +98,20 @@ To access the app from another device (phone, tablet, etc.):
 
 ## Troubleshooting
 
-### "Failed to upload image to ComfyUI"
-- Check that ComfyUI is running with CORS enabled
-- Verify the URL in `.env` matches your ComfyUI address
-- Check browser console for detailed error messages
+### "Failed to upload image"
+- Check that the proxy server is running (`npm run server`)
+- Check that ComfyUI is running
+- Check browser console for details
+
+### "Network Error" from phone/tablet
+- Make sure your phone is on the **same WiFi** as your computer
+- Use the Network URL shown in the terminal, not localhost
+- Check that proxy server is running on port 3001
 
 ### Camera not working
-- Ensure you're accessing the site via HTTPS or localhost
-- Camera requires secure context (HTTPS or 127.0.0.1/localhost)
+- Ensure you're accessing via HTTPS or localhost
+- Camera requires secure context
 - Grant camera permissions when prompted
-
-### CORS errors
-Make sure ComfyUI is started with the environment variable:
-```bash
-set COMFYUI_ENABLE_CORS_HEADER=*
-```
 
 ## Project Structure
 
@@ -118,7 +119,8 @@ set COMFYUI_ENABLE_CORS_HEADER=*
 - `src/components/ImageUploader.jsx` - Photo upload component
 - `src/components/ResultDisplay.jsx` - Result comparison
 - `src/components/CameraOverlay.jsx` - Camera AR overlay
-- `src/services/comfyuiService.js` - ComfyUI API integration
+- `src/services/comfyuiService.js` - Proxy API integration
+- `server.js` - Express proxy server (middleman)
 - `cartoon_Style.json` - ComfyUI workflow configuration
 
 ## Credits
