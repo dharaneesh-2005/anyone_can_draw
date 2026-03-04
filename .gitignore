@@ -34,10 +34,11 @@ lerna-debug.log*
 # Testing
 coverage/
 
-# Environment files
+# Environment files - ignore all .env files except .env.example
 .env
 .env.local
 .env.*.local
+!.env.example
 
 # ComfyUI specific
 ComfyUI/

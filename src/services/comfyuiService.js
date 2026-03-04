@@ -1,10 +1,15 @@
 import axios from 'axios';
 
 // IMPORTANT: ComfyUI must be started with CORS enabled for this to work.
-// Start ComfyUI with: python main.py --listen 127.0.0.1 --port 8000 --enable-cors-header "*"
+// Start ComfyUI with: python main.py --listen 0.0.0.0 --port 8000 --enable-cors-header "*"
 // Or set environment variable before starting: set COMFYUI_ENABLE_CORS_HEADER=*
-const COMFYUI_BASE_URL = 'http://127.0.0.1:8000';
-const COMFYUI_API_URL = `${COMFYUI_BASE_URL}/api`; 
+
+// Get ComfyUI URL from environment variable or use default
+// For remote access, set VITE_COMFYUI_URL in your .env file or before build
+const COMFYUI_BASE_URL = import.meta.env.VITE_COMFYUI_URL || 'http://127.0.0.1:8000';
+const COMFYUI_API_URL = `${COMFYUI_BASE_URL}/api`;
+
+console.log('ComfyUI URL:', COMFYUI_BASE_URL); // Debug log
 
 // Simple axios config without credentials to avoid CORS preflight issues
 const axiosConfig = {
