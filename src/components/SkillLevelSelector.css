@@ -1,0 +1,135 @@
+.skill-level-selector {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.selector-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.selector-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.skill-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.skill-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.skill-option:hover {
+  border-color: #4a90d9;
+  background: #f8fbff;
+}
+
+.skill-option.selected {
+  border-color: #4a90d9;
+  background: #eef5ff;
+}
+
+.skill-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.skill-label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.skill-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin-left: auto;
+  text-align: right;
+}
+
+.selector-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirm-btn {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #4a90d9 0%, #357abd 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #357abd 0%, #2a6299 100%);
+  transform: translateY(-1px);
+}
+
+.confirm-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  padding: 12px 24px;
+  background: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+@media (max-width: 480px) {
+  .skill-level-selector {
+    padding: 20px;
+    margin: 0 16px;
+  }
+
+  .selector-title {
+    font-size: 1.25rem;
+  }
+
+  .skill-option {
+    padding: 14px;
+  }
+
+  .skill-description {
+    display: none;
+  }
+}

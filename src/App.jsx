@@ -3,6 +3,7 @@ import ImageUploader from './components/ImageUploader';
 import ResultDisplay from './components/ResultDisplay';
 import LoadingOverlay from './components/LoadingOverlay';
 import CameraOverlay from './components/CameraOverlay';
+import SkillLevelSelector from './components/SkillLevelSelector';
 import comfyuiService from './services/comfyuiService';
 import workflow from '../cartoon_Style.json';
 import './App.css';
@@ -14,19 +15,17 @@ function App() {
   const [progressMessage, setProgressMessage] = useState('');
   const [error, setError] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
+  const [showSkillSelector, setShowSkillSelector] = useState(false);
 
   const handleImageSelect = useCallback((file) => {
     setSelectedImage(file);
     setResultImage(null);
     setError(null);
+    setShowSkillSelector(true);
   }, []);
 
-  const handleGenerate = async () => {
-    if (!selectedImage) {
-      setError('Please select an image first');
-      return;
-    }
-
+  const handleSkillSelect = async (skillLevel) => {
+    setShowSkillSelector(false);
     setIsProcessing(true);
     setError(null);
     setProgressMessage('Starting...');
@@ -35,6 +34,7 @@ function App() {
       const resultUrl = await comfyuiService.executeWorkflow(
         selectedImage,
         workflow,
+        skillLevel,
         (message) => setProgressMessage(message)
       );
       setResultImage(resultUrl);
@@ -46,11 +46,17 @@ function App() {
     }
   };
 
+  const handleSkillCancel = () => {
+    setShowSkillSelector(false);
+    setSelectedImage(null);
+  };
+
   const handleReset = () => {
     setSelectedImage(null);
     setResultImage(null);
     setError(null);
     setShowCamera(false);
+    setShowSkillSelector(false);
   };
 
   const handleOpenCamera = () => {
@@ -77,14 +83,11 @@ function App() {
                 selectedImage={selectedImage}
               />
 
-              {selectedImage && !resultImage && (
-                <button
-                  className="generate-btn"
-                  onClick={handleGenerate}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? 'Processing...' : 'Generate Line Art'}
-                </button>
+              {showSkillSelector && selectedImage && !resultImage && !isProcessing && (
+                <SkillLevelSelector
+                  onSelect={handleSkillSelect}
+                  onCancel={handleSkillCancel}
+                />
               )}
 
               {resultImage && (
