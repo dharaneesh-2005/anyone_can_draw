@@ -74,23 +74,26 @@
 /* Controls - positioned at top right with collapse functionality */
 .overlay-controls {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 12px;
+  right: 12px;
   left: auto;
   transform: none;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
   z-index: 1001;
   background: rgba(0, 0, 0, 0.5);
-  padding: 8px 16px;
-  border-radius: 30px;
+  padding: 6px 10px;
+  border-radius: 24px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  max-width: calc(100vw - 24px);
 }
 
 .overlay-controls.collapsed {
-  padding: 8px;
+  padding: 6px;
   background: rgba(0, 0, 0, 0.3);
 }
 
@@ -108,8 +111,8 @@
 }
 
 .control-btn {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.9);
@@ -119,8 +122,9 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   padding: 0;
+  flex-shrink: 0;
 }
 
 .control-btn:hover {
@@ -133,8 +137,8 @@
 }
 
 .control-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #333;
 }
 
@@ -242,37 +246,56 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .overlay-controls {
-    top: 16px;
-    right: 16px;
+    top: 8px;
+    right: 8px;
     left: auto;
     transform: none;
-    gap: 8px;
-    padding: 6px 12px;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 20px;
   }
 
   .overlay-controls.collapsed {
-    padding: 6px;
+    padding: 4px;
   }
 
   .control-btn {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
   }
   
   .control-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
   
   .overlay-instructions {
-    font-size: 0.8rem;
-    padding: 10px 18px;
-    bottom: 20px;
+    font-size: 0.75rem;
+    padding: 8px 14px;
+    bottom: 16px;
   }
   
   .overlay-image {
     max-width: 90%;
     max-height: 90%;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 380px) {
+  .overlay-controls {
+    gap: 4px;
+    padding: 3px 6px;
+  }
+  
+  .control-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .control-btn svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -338,12 +361,46 @@
 /* Landscape mode */
 @media (orientation: landscape) and (max-height: 500px) {
   .overlay-controls {
-    top: 12px;
-    padding: 6px 12px;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  
+  .control-btn {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .control-btn svg {
+    width: 16px;
+    height: 16px;
   }
   
   .overlay-instructions {
-    bottom: 16px;
+    bottom: 12px;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+  
+  .transparency-slider-container {
+    bottom: 60px;
+    padding: 6px 12px;
+  }
+  
+  .micro-adjustment-panel {
+    bottom: 60px;
+    left: 8px;
+  }
+  
+  .nudge-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .nudge-btn svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -477,119 +534,106 @@
   transform: translateX(-50%);
 }
 
-/* Micro-adjustment Panel */
+/* Micro-adjustment Panel - Glassmorphism floating arrows */
 .micro-adjustment-panel {
   position: fixed;
-  bottom: 140px;
-  left: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 12px;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  bottom: 100px;
+  left: 12px;
   z-index: 1001;
-  min-width: 120px;
-}
-
-.step-size-selector {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
 }
 
-.step-size-selector label {
+/* Step indicator - small glass pill */
+.step-indicator {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 4px 10px;
+  border-radius: 12px;
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 500;
-  text-align: center;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.step-buttons {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-}
-
-.step-btn {
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.step-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.step-btn.active {
-  background: #667eea;
-  border-color: #667eea;
-}
-
-.nudge-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.nudge-row {
-  display: flex;
-  gap: 4px;
-}
-
+/* Glassmorphism arrow buttons */
 .nudge-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .nudge-btn:hover {
-  background: white;
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .nudge-btn:active {
   transform: scale(0.95);
-  background: #667eea;
-}
-
-.nudge-btn:active svg {
-  color: white;
+  background: rgba(102, 126, 234, 0.4);
 }
 
 .nudge-btn svg {
-  width: 18px;
-  height: 18px;
-  color: #333;
+  width: 20px;
+  height: 20px;
+  color: white;
+  stroke-width: 2.5;
+}
+
+.nudge-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.nudge-btn.center-nudge {
+  width: 32px;
+  height: 32px;
+}
+
+.nudge-btn.center-nudge svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Mobile adjustments for micro-adjustment panel */
 @media (max-width: 768px) {
   .micro-adjustment-panel {
-    bottom: 140px;
-    left: 10px;
-    padding: 8px;
-    min-width: 90px;
+    bottom: 80px;
+    left: 8px;
+    gap: 3px;
+  }
+  
+  .step-indicator {
+    font-size: 0.6rem;
+    padding: 3px 8px;
   }
   
   .nudge-btn {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nudge-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .nudge-row {
+    gap: 8px;
   }
   
   .nudge-btn svg {
